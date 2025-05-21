@@ -1,0 +1,6 @@
+[submodule "backend"]
+	path = backend
+	url = https://github.com/jeanjoelkapula/django-rest-twitter.git
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/jeanjoelkapula/react-twitter.git
