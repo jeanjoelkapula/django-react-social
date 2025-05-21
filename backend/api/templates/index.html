@@ -1,0 +1,24 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {{ user.username|json_script:"room-name" }}
+    <script>
+        //establish connection to server
+        room_name = JSON.parse(document.getElementById('room-name').textContent);
+            ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+
+            const chatSocket = new WebSocket(
+                ws_scheme + '://'
+                + window.location.host
+                + '/ws/chat/'
+                + room_name
+                + '/'
+            );
+    </script>
+</body>
+</html>
