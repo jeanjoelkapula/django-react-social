@@ -103,8 +103,9 @@ This project started from Harvard's [CS50 Web Programming with Python and JavaSc
 1. **Install dependencies:**
     ```bash
     cd frontend
-    npm install
+    npm install --legacy-peer-deps
     ```
+    - `--legacy-peer-deps` is required: `redux-form@8` declares a peer dependency on React 16/17, but the app uses React 18.
 2. **Start the development server:**
     ```bash
     npm start
