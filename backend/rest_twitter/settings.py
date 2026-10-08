@@ -108,18 +108,27 @@ REDIS_URL = os.environ.get('REDIS_URL', default='redis://localhost:6379')
 REDIS_HOST, REDIS_PORT, REDIS_USER, REDIS_PASSWORD, REDIS_DB = parse_redis_url(REDIS_URL)
 
 # DJANGO CHANNELS
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [{
-                'address': f'redis://{REDIS_HOST}:{REDIS_PORT}',
-                'db': REDIS_DB,
-                'password': REDIS_PASSWORD,
-            }],
+# Set CHANNEL_LAYER=memory to run without Redis (tests, CI, quick local dev).
+# The in-memory layer only works within a single process; use Redis otherwise.
+if os.environ.get('CHANNEL_LAYER') == 'memory':
+    CHANNEL_LAYERS = {
+        'default': {
+            'BACKEND': 'channels.layers.InMemoryChannelLayer',
         },
-    },
-}
+    }
+else:
+    CHANNEL_LAYERS = {
+        'default': {
+            'BACKEND': 'channels_redis.core.RedisChannelLayer',
+            'CONFIG': {
+                "hosts": [{
+                    'address': f'redis://{REDIS_HOST}:{REDIS_PORT}',
+                    'db': REDIS_DB,
+                    'password': REDIS_PASSWORD,
+                }],
+            },
+        },
+    }
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases

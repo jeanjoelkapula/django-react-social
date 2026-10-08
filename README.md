@@ -95,6 +95,8 @@ This project started from Harvard's [CS50 Web Programming with Python and JavaSc
     ```
 5. **(For real-time chat)**  
     Use Django Channels with an ASGI server (e.g., Daphne or Uvicorn).
+    - Chat uses Redis by default (`REDIS_URL`, default `redis://localhost:6379`). On Windows, [Memurai](https://www.memurai.com/) is a Redis-compatible server.
+    - To run without Redis (tests, CI, quick local dev), set `CHANNEL_LAYER=memory`. This uses Channels' in-memory layer, which only works within a single process and is not for production.
 
 ---
 
