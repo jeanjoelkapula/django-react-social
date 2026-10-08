@@ -63,6 +63,14 @@ python manage.py check
 python manage.py makemigrations --check --dry-run   # fails if a model change has no migration
 ```
 
+The backend suite lives in `backend/api/tests/` (`test_auth.py`, `test_services.py`, `test_post_api.py`, `test_chat_consumer.py`, shared factories in `helpers.py`) and runs in a couple of seconds. The chat tests override the channel layer themselves, so they do not need Redis or `CHANNEL_LAYER=memory`.
+
+Writing backend tests:
+- Use `make_user`, `make_post(user, text, age_minutes)` and `auth_client(user)` from `helpers.py`. `make_post` sets `date_created` explicitly; do not rely on creation order for ordering tests, timestamps can tie.
+- `make_user` creates accounts without a password hash (hashing is slow). Only login/registration tests pass a password, and they use the `FAST_HASHERS` setting.
+- A known bug gets a test of the **correct** behavior marked `@unittest.expectedFailure` with a comment describing the bug. When you fix the bug, delete the decorator in the same PR.
+- Consumer tests must be `TransactionTestCase`. Run the async scenario with `run_async()` and check the database afterwards in plain sync code: awaiting `database_sync_to_async` while the sync `ChatConsumer` is still running made the suite hang intermittently. Django also drops `expectedFailure` from `async def` test methods, so keep those tests synchronous.
+
 Frontend (from `frontend/`):
 
 ```bash
